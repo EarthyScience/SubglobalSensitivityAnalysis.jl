@@ -1,8 +1,8 @@
 """
     estimate_regional_sobol_indices(f, parmsModeUpperRows, p0; 
-        n_sample = 500, δ_cp = 0.1)
+        n_sample = 500, δ_cp = 0.1, names_opt, targets)
 
-Estimate the Sobol sensitivity indices for a subset of the global space around
+Estimate the Sobol sensitivity indices for a subspace of the global space around
 parameter vector p0.
 
 The region subspace to sample is determined by an area in the cumulative
@@ -22,6 +22,7 @@ and n is the number of samples in each of the two random parameter samples.
 - parmsModeUpperRows: a Vector of Tuples of the form 
   `(:par_name, Distribution, mode, 95%_quantile)` where Distribution is
   a non-parameterized Object from Distributions.jl such as `LogNormal`
+  or alternatively, already the result of [`fit_distributions`](@ref)
 - p0: the parameter around which the samples are drawn.
 
 Optional
@@ -32,6 +33,7 @@ Optional
   computation to specific outputs.
 - `min_quant=0.005` and `max_quant=0.995`: to constrain the range of 
   cumulative probabilities when parameters are near the ends of the distribution.
+- names_opt: a `NTuple{Symbol}` of subset of the parameters given with parmsModeUpperRows
   
 ## Return value
 A DataFrame with columns
@@ -42,15 +44,22 @@ A DataFrame with columns
 - cf95_lower and cf95_upper: estimates of the 95% confidence interval
 - target: the result, for which the sensitivity has been computed
 """
-function estimate_subglobal_sobol_indices(
-    f, parmsModeUpperRows, p0; n_sample = 500, δ_cp = 0.1, targets = missing)
-    #
+function estimate_subglobal_sobol_indices(f, parmsModeUpperRows, p0; kwargs...)
     df_dist = fit_distributions(parmsModeUpperRows)
+    estimate_subglobal_sobol_indices(f, df_dist, p0; kwargs...)
+end,
+function estimate_subglobal_sobol_indices(
+    f, df_dist::DataFrame, p0; 
+    n_sample=500, δ_cp=0.1, targets=missing, names_opt=missing)
+    #
     set_reference_parameters!(df_dist, p0)
     calculate_parbounds!(df_dist; δ_cp)
-    (;cp_design, df_cfopt, path_sens_object) = compute_cp_design_matrix(
-        df_dist, df_dist.par, n_sample)
-    q_design = transform_cp_design_to_quantiles(df_cfopt, cp_design)
+    if ismissing(names_opt); names_opt = df_dist.par; end
+    # only works since 1.7: (;cp_design, df_cfopt, path_sens_object) = compute_cp_design_matrix(
+    # need to care for argument order
+    (cp_design, df_cfopt, path_sens_object) = compute_cp_design_matrix(
+            df_dist, names_opt, n_sample)
+        q_design = transform_cp_design_to_quantiles(df_cfopt, cp_design)
     res = map(r -> f(r...), eachrow(q_design))
     if ismissing(targets); targets = propertynames(first(res)); end
     dfs = map(targets) do target

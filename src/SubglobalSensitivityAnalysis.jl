@@ -9,7 +9,7 @@ using StaticArrays
 
 using Infiltrator
 
-export estimate_subglobal_sobol_indices
+export estimate_subglobal_sobol_indices, fit_distributions
 
 include("sens_util.jl")
 

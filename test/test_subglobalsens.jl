@@ -31,7 +31,7 @@ end;
 @testset "calculate_parbounds" begin
     (par,dist) = df_dist[1,[:par,:dist]]
     x = p0[par]
-    (;sens_lower, sens_upper, cp_par, cp_sens_lower, cp_sens_upper) = CP.calculate_parbounds(dist, x)
+    (sens_lower, sens_upper, cp_par, cp_sens_lower, cp_sens_upper) = CP.calculate_parbounds(dist, x)
     @test cp_sens_lower == cp_par - 0.1
     @test cp_sens_upper == cp_par + 0.1
     @test sens_lower < x
@@ -54,7 +54,7 @@ end;
     df2 = copy(df_dist)
     CP.set_reference_parameters!(df2, p0)
     CP.calculate_parbounds!(df2)
-    (;cp_design, df_cfopt, path_sens_object) = CP.compute_cp_design_matrix(df2, df2.par, 10)
+    (cp_design, df_cfopt, path_sens_object) = CP.compute_cp_design_matrix(df2, df2.par, 10)
     np = nrow(df2)
     @test size(cp_design) == ((2*np)*10,2)
 end;
@@ -62,7 +62,7 @@ end;
 df_dist_ext = copy(df_dist)
 CP.set_reference_parameters!(df_dist_ext, p0)
 CP.calculate_parbounds!(df_dist_ext)
-(;cp_design, df_cfopt, path_sens_object) = CP.compute_cp_design_matrix(df_dist_ext, df_dist_ext.par, 10)
+(cp_design, df_cfopt, path_sens_object) = CP.compute_cp_design_matrix(df_dist_ext, df_dist_ext.par, 10)
 
 @testset "transform_cp_design_to_quantiles" begin
     q_design = CP.transform_cp_design_to_quantiles(df_cfopt, cp_design)
