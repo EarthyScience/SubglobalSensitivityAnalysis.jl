@@ -95,13 +95,6 @@ function check_R()
       """)
 end
 
-i_tmp = () -> begin
-    rcopy(R"remove.packages('units')")
-    rcopy(R"library(sensitivity)")
-    rcopy(R".libPaths()")
-    rcopy(R"install.packages('units', method='curl')")
-end
-
 """
     fit_distributions(tups)
     fit_distributions!(df)
