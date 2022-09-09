@@ -85,8 +85,11 @@ function check_R()
         libdir = file.path(tempdir(),"session-library")
         dir.create(libdir)
         .libPaths(libdir)
-        #install.packages("sensitivity", method="curl")
-        install.packages("sensitivity")
+        res <- try(install.packages("sensitivity"), TRUE)
+        if(inherits(res, "try-error")) {
+            res <- install.packages("sensitivity", method="curl")
+        }
+        #install.packages("sensitivity")
       }
       library(sensitivity)
       """)

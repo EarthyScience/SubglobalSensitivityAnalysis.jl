@@ -24,6 +24,6 @@ range is sampled, and that more samples are drawn where the prior probability
 of the parameter is higher.
 
 ## How 
-Setup arguments and call the main function [`estimate_subglobal_sobol_indices`](@ref),
+Setup arguments and call the main function [`estimate_subglobal_sobol_indices`](https://bgctw.github.io/SubglobalSensitivityAnalysis.jl/dev/reference/#SubglobalSensitivityAnalysis.estimate_subglobal_sobol_indices),
 as described in the example doctest.
 
