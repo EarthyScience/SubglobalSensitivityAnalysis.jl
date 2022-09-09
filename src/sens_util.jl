@@ -79,6 +79,12 @@ load libraries and if not found, try to install them before.
 function check_R()
     res = rcopy(R"""
       if (!requireNamespace("sensitivity")) {
+        # make a session-only library for R packages in tmp-dir
+        # to avoid error of non-writeable directory
+        # and to not interfere with users R installation
+        libdir = file.path(tempdir(),"session-library")
+        dir.create(libdir)
+        .libPaths(libdir)
         #install.packages("sensitivity", method="curl")
         install.packages("sensitivity")
       }
