@@ -25,6 +25,9 @@ jobs:
         arch:
           - x64
     steps:
+      - run: mkdir $HOME/Rlibs
+      - run: echo R_LIBS_USER="$HOME/Rlibs/%p-library/%v > $HOME/.Renviron
+      - run: Rscript -e "install.packages(c('sensitivity'))"
       - uses: actions/checkout@v2
       - uses: julia-actions/setup-julia@v1
         with:
