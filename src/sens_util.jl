@@ -72,6 +72,28 @@ function estimate_subglobal_sobol_indices(
 end
 
 """
+    check_R()
+
+load libraries and if not found, try to install them before.    
+"""
+function check_R()
+    res = rcopy(R"""
+      if (!requireNamespace("sensitivity")) {
+        #install.packages("sensitivity", method="curl")
+        install.packages("sensitivity")
+      }
+      library(sensitivity)
+      """)
+end
+
+i_tmp = () -> begin
+    rcopy(R"remove.packages('units')")
+    rcopy(R"library(sensitivity)")
+    rcopy(R".libPaths()")
+    rcopy(R"install.packages('units', method='curl')")
+end
+
+"""
     fit_distributions(tups)
     fit_distributions!(df)
 
@@ -81,8 +103,6 @@ In the first variant, parameters are specified as a vector of tuples, which are
 converted to a `DataFrame`.
 A new column `:dist` with a concrete Distribution is added.
 The second variant modifies a `DataFrame` with corresponding input columns.
-
-
 """
 function fit_distributions(parmsModeUpperRows::AbstractVector{T}; 
     cols = (:par, :dType, :mode, :upper)) where T <: Tuple
@@ -163,8 +183,9 @@ function compute_cp_design_matrix(df_dist, names_opt, N; path_sens_object=tempna
         select(:par, :cp_sens_lower, :cp_sens_upper, :dist) 
         subset(:par => ByRow(x -> x ∈ names_opt))
     end
+    check_R()
     cp_design = rcopy(R"""
-        library(sensitivity)
+        #library(sensitivity) # moved to check_R() that installs
         # for sobolowen X1,X2,X3 need to be data.frames, and need to convert
         # design matrix (now also a data.frame) to array
         set.seed(0815)
@@ -217,10 +238,11 @@ Returns a DataFrame with columns
 - cf95_lower and cf95_upper: estimates of the 95% confidence interval
 """ 
 function compute_sobol_indices(y, path_sens_object, par_names)
+    check_R()
     df_S, df_T = rcopy(R"""
         y = $(y)
         path_sens = $(path_sens_object)
-        library(sensitivity)
+        #library(sensitivity) # moved to check_R
         sensObject = readRDS(path_sens)
         tell(sensObject, y)
         l <- list(sensObject$S, sensObject$T)
