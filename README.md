@@ -27,3 +27,18 @@ of the parameter is higher.
 Setup arguments and call the main function [`estimate_subglobal_sobol_indices`](https://bgctw.github.io/SubglobalSensitivityAnalysis.jl/dev/reference/#SubglobalSensitivityAnalysis.estimate_subglobal_sobol_indices),
 as described in the example doctest.
 
+## Foreign dependencies
+This Julia package depends on `RCall.jl` and the `sensitivity` R package.
+If the R package is missing, this Julia package will try to automatically install it
+into an temporary R library path and has to do it on each new R session.
+
+In order to permanently install the `sensitivity` package into one's R user library 
+execute:
+```
+using RCall
+R"""
+suppressWarnings(dir.create(Sys.getenv('R_LIBS_USER'),recursive=TRUE))
+install.packages('sensitivity')
+#install.packages('sensitivity', method='curl') # on some machines instead
+"""
+```
