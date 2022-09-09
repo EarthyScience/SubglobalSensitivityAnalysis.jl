@@ -25,9 +25,11 @@ jobs:
         arch:
           - x64
     steps:
-      - run: Rscript -e "Sys.getenv('R_LIBS_USER')"
-      - run: Rscript -e "lu=Sys.getenv('R_LIBS_USER');dir.create(lu,recursive=TRUE);.libPaths(lu);.libPaths()"
-      - run: Rscript -e ".libPaths(Sys.getenv('R_LIBS_USER')); .libPaths(); install.packages(c('sensitivity'))"
+      #- run: Rscript -e "Sys.getenv('R_LIBS_USER')"
+      #- run: Rscript -e "lu=Sys.getenv('R_LIBS_USER');dir.create(lu,recursive=TRUE);.libPaths(lu);.libPaths()"
+      - run: Rscript -e "lu=Sys.getenv('R_LIBS_USER');dir.create(lu,recursive=TRUE)"
+      - run: Rscript -e ".libPaths()"
+      - run: RScript -e "install.packages(c('sensitivity'))"
       - uses: actions/checkout@v2
       - uses: julia-actions/setup-julia@v1
         with:
