@@ -1,13 +1,13 @@
 """
-    estimate_regional_sobol_indices(f, parmsModeUpperRows, p0; 
+    estimate_subglobal_sobol_indices(f, parmsModeUpperRows, p0; 
         n_sample = 500, δ_cp = 0.1, names_opt, targets)
 
 Estimate the Sobol sensitivity indices for a subspace of the global space around
-parameter vector p0.
+parameter vector `p0`.
 
-The region subspace to sample is determined by an area in the cumulative
-probability function, specifically for parameter i: cdf(p0) ± δ_cp, 
-Samples are drawn from this region in the cdf and converted back to quantiles
+The subspace to sample is determined by an area in the cumulative
+probability function, specifically for parameter i: cdf(p0) ± δ_cp.
+Samples are drawn from this cdf-scale and converted back to quantiles
 at the parameter scale.
 
 Sobol indices are estimated using the method of Touati (2016), which
@@ -16,38 +16,39 @@ and n is the number of samples in each of the two random parameter samples.
 
 ## Arguments
 
-- f: a function to compute a set of results, whose sensitivity is to be inspected,
- from parametes `(p1, p2, ...) -> NamedTuple{NTuple{N,NT}} where NT <: Number`, 
- for example `fsens = (a,b) -> (;target1 = a + b -1, target2 = a + b -0.5)`.
-- parmsModeUpperRows: a Vector of Tuples of the form 
+- `f`: a function to compute a set of results, whose sensitivity is to be inspected,
+  from parametes `(p1, p2, ...) -> NamedTuple{NTuple{N,NT}} where NT <: Number`, 
+  for example `fsens = (a,b) -> (;target1 = a + b -1, target2 = a + b -0.5)`.
+- `parmsModeUpperRows`: a Vector of Tuples of the form 
   `(:par_name, Distribution, mode, 95%_quantile)` where Distribution is
-  a non-parameterized Object from Distributions.jl such as `LogNormal`
-  or alternatively, already the result of [`fit_distributions`](@ref)
-- p0: the parameter around which the samples are drawn.
+  a non-parameterized Object from Distributions.jl such as `LogNormal`.
+  Alternatively, the argument can be the result of [`fit_distributions`](@ref)
+- `p0`: the parameter around which the samples are drawn.
 
 Optional
 
-- n_sample = 500: the number of parameter-vectors in each of the two samples
-- δ_cp = 0.1: the range around cdf(p0_i) to sample.
-- targets: a `NTuple{Symbol}` of subset of the outputs of f, to constrain the 
-  computation to specific outputs.
+- `n_sample = 500`: the number of parameter-vectors in each of the samples
+   used by the sensitivity method.
+- `δ_cp = 0.1`: the range around cdf(p0_i) to sample.
 - `min_quant=0.005` and `max_quant=0.995`: to constrain the range of 
   cumulative probabilities when parameters are near the ends of the distribution.
-- names_opt: a `NTuple{Symbol}` of subset of the parameters given with parmsModeUpperRows
+- `targets`: a `NTuple{Symbol}` of subset of the outputs of f, to constrain the 
+  computation to specific outputs.
+- `names_opt`: a `NTuple{Symbol}` of subset of the parameters given with parmsModeUpperRows
   
 ## Return value
 A DataFrame with columns
 
-- par: parameter name 
-- index: which one of the SOBOL-indices, `:first_order` or `:total`
-- value: the estimate
-- cf95_lower and cf95_upper: estimates of the 95% confidence interval
-- target: the result, for which the sensitivity has been computed
+- `par`: parameter name 
+- `index`: which one of the SOBOL-indices, `:first_order` or `:total`
+- `value`: the estimate
+- `cf95_lower` and `cf95_upper`: estimates of the 95% confidence interval
+- `target`: the result, for which the sensitivity has been computed
 """
 function estimate_subglobal_sobol_indices(f, parmsModeUpperRows, p0; kwargs...)
     df_dist = fit_distributions(parmsModeUpperRows)
     estimate_subglobal_sobol_indices(f, df_dist, p0; kwargs...)
-end,
+end
 function estimate_subglobal_sobol_indices(
     f, df_dist::DataFrame, p0; 
     n_sample=500, δ_cp=0.1, targets=missing, names_opt=missing)
@@ -74,12 +75,14 @@ end
     fit_distributions(tups)
     fit_distributions!(df)
 
-For each row, use fit a distribution of type `dType` to `mode` and `upper` quantile.
+For each row, fit a distribution of type `dType` to `mode` and `upper` quantile.
 
 In the first variant, parameters are specified as a vector of tuples, which are 
 converted to a `DataFrame`.
 A new column `:dist` with a concrete Distribution is added.
 The second variant modifies a `DataFrame` with corresponding input columns.
+
+
 """
 function fit_distributions(parmsModeUpperRows::AbstractVector{T}; 
     cols = (:par, :dType, :mode, :upper)) where T <: Tuple
@@ -94,7 +97,7 @@ function fit_distributions(parmsModeUpperRows::AbstractVector{T};
     @assert all(df[:,3] .<= df[:,4]) "Expected all third tuple components (mode) to be " *
     "smaller than forth tuple components (upper quantile)"
     fit_distributions!(df)
-end,
+end
 function fit_distributions!(df::DataFrame)
     f1v = (dType, mode, upper) -> fit(dType, @qp_m(mode), @qp_uu(upper))
     transform!(df, Cols(:dType,:mode,:upper) => ByRow(f1v) => :dist)
