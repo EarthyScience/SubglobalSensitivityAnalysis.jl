@@ -6,10 +6,16 @@ using DataFrames, Tables
 using RCall
 using Chain
 using StaticArrays
+using InlineStrings
 
 using Infiltrator
 
-export estimate_subglobal_sobol_indices, fit_distributions
+export SensitivityEstimator, SobolSensitivityEstimator, RSobolEstimator
+export generate_design_matrix, get_design_matrix, estimate_sobol_indices
+export SobolTouati
+include("Sobol.jl")
+
+export estimate_subglobal_sobol_indices, fit_distributions, set_reference_parameters!
 include("sens_util.jl")
 
 export install_R_dependencies
