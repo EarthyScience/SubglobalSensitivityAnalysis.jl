@@ -39,6 +39,7 @@ using SubglobalSensitivityAnalysis
 install_R_dependencies(["sensitivity"])
 ```
 
+Caution, this may interfere with other R projects.
 Note, this installation to R user library needs to be run before other commands
 from the package, because otherwise the R package is maybe already installed 
 at the R session specific library and the installation is skipped.
