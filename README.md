@@ -35,10 +35,11 @@ into an temporary R library path and has to do it on each new R session.
 In order to permanently install the `sensitivity` package into one's R user library 
 execute:
 ```
-using RCall
-R"""
-suppressWarnings(dir.create(Sys.getenv('R_LIBS_USER'),recursive=TRUE))
-install.packages('sensitivity')
-#install.packages('sensitivity', method='curl') # on some machines instead
-"""
+using SubglobalSensitivityAnalysis
+install_R_dependencies(["sensitivity"])
 ```
+
+Caution, this may interfere with other R projects.
+Note, this installation to R user library needs to be run before other commands
+from the package, because otherwise the R package is maybe already installed 
+at the R session specific library and the installation is skipped.

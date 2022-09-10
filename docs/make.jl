@@ -20,7 +20,8 @@ makedocs(;
     ),
     pages=[
         "Home" => "index.md",
-        "Reference" => "reference.md",
+        "Subglobal SA" => "estimate_subglobal.md",
+        "R dependencies" => "install_R_dependencies.md",
     ],
 )
 

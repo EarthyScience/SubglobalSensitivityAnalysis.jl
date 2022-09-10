@@ -1,6 +1,6 @@
 ## Reference
 ```@index
-Pages = ["reference.md",]
+Pages = ["estimate_subglobal.md",]
 ```
 
 ```@docs

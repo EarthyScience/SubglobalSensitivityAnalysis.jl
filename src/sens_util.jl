@@ -74,25 +74,13 @@ end
 """
     check_R()
 
-load libraries and if not found, try to install them before.    
+load R libraries and if not found, try to install them before
+to session-specific library path.
 """
 function check_R()
-    res = rcopy(R"""
-      if (!requireNamespace("sensitivity")) {
-        # make a session-only library for R packages in tmp-dir
-        # to avoid error of non-writeable directory
-        # and to not interfere with users R installation
-        libdir = file.path(tempdir(),"session-library")
-        dir.create(libdir)
-        .libPaths(libdir)
-        res <- try(install.packages("sensitivity"), TRUE)
-        if(inherits(res, "try-error")) {
-            res <- install.packages("sensitivity", method="curl")
-        }
-        #install.packages("sensitivity")
-      }
-      library(sensitivity)
-      """)
+    lib = rcopy(R"file.path(tempdir(),'session-library')")
+    install_R_dependencies(["sensitivity"]; lib)
+    R"library(sensitivity)"
 end
 
 """
