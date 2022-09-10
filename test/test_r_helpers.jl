@@ -6,6 +6,8 @@ i_debug = () -> begin
     rcopy(R"str($(packages))")
     rcopy(R"remove.packages(c('measurements'))")
     rcopy(R"remove.packages(c('measurements'),$(lib))")
+    retcode = install_R_dependencies(["measurements"]; lib)
+
     rcopy(R"system.file(package='measurements')")
     rcopy(R"requireNamespace('measurements')")
     rcopy(R"tmpf = function(){ return(1) }; tmpf()")
