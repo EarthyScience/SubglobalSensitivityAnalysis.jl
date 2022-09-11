@@ -22,6 +22,8 @@ makedocs(;
         "Home" => "index.md",
         "Subglobal SA" => "estimate_subglobal.md",
         "R dependencies" => "install_R_dependencies.md",
+        "Sobol methods" => "SobolSensitivityEstimator.md",
+        "Reload design matrix" => "reload_design.md"
     ],
 )
 

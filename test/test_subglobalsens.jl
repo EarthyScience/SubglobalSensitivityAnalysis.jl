@@ -6,6 +6,7 @@
 parmsModeUpperRows = [
     (:a, LogNormal, 0.1 , 0.5),
     (:b, LogitNormal, 0.3 , 0.9),
+    (:nonopt, LogitNormal, 0.3 , 0.9),
 ]
 df_dist = CP.fit_distributions(parmsModeUpperRows)
 p0 = Dict(:a => 0.2, :b => 0.4)
@@ -25,7 +26,7 @@ end;
     df2 = copy(df_dist)
     # no b -> missing, key c is irrelevant
     CP.set_reference_parameters!(df2, Dict(:a => 1.0, :c => 3.0))
-    @test isequal(df2.ref, [1.0, missing])
+    @test isequal(df2.ref, [1.0, missing, missing])
 end;
 
 @testset "calculate_parbounds" begin
@@ -50,41 +51,29 @@ end;
     @test ismissing(df2.ref[2])
 end;
 
-@testset "compute_cp_design_matrix" begin
-    df2 = copy(df_dist)
-    CP.set_reference_parameters!(df2, p0)
-    CP.calculate_parbounds!(df2)
-    (cp_design, df_cfopt, path_sens_object) = CP.compute_cp_design_matrix(df2, df2.par, 10)
-    np = nrow(df2)
-    @test size(cp_design) == ((2*np)*10,2)
-end;
-
+names_opt = [:a, :b]
 df_dist_ext = copy(df_dist)
 CP.set_reference_parameters!(df_dist_ext, p0)
 CP.calculate_parbounds!(df_dist_ext)
-(cp_design, df_cfopt, path_sens_object) = CP.compute_cp_design_matrix(df_dist_ext, df_dist_ext.par, 10)
+estim=CP.SobolTouati()
+df_dist_opt = subset(df_dist_ext, :par => ByRow(x -> x ∈ names_opt))
+n_sample = 20
+X1 = CP.get_uniform_cp_sample(df_dist_opt, n_sample);
+X2 = CP.get_uniform_cp_sample(df_dist_opt, n_sample);
+cp_design = generate_design_matrix(sens_estimator, X1, X2)
 
 @testset "transform_cp_design_to_quantiles" begin
-    q_design = CP.transform_cp_design_to_quantiles(df_cfopt, cp_design)
+    q_design = CP.transform_cp_design_to_quantiles(df_dist_opt, cp_design)
     @test size(q_design) == size(cp_design)
 end
 
 # for each row compute multiple results
-q_design = CP.transform_cp_design_to_quantiles(df_cfopt, cp_design)
+q_design = CP.transform_cp_design_to_quantiles(df_dist_opt, cp_design)
 fsens = (a,b) -> (;s1 = a + b -1, s2 = a + b -0.5)
 res = map(r -> fsens(r...), eachrow(q_design))
 
-@testset "compute_sobol_indices" begin
-    target = :s1
-    y = [tup[target] for tup in res]
-    df_sobol =  CP.compute_sobol_indices(y, path_sens_object, df_cfopt.par)
-    @test df_sobol.par == [:a,:b,:a,:b]
-    @test df_sobol.index == [:first_order, :first_order, :total, :total]
-    @test all([:value, :cf95_lower, :cf95_upper] .∈ Ref(propertynames(df_sobol)))
-end
-
 @testset "estimate_subglobal_sobol_indices" begin
     fsens = (a,b) -> (;target1 = a + b -1, target2 = a + b -0.5)
-    df_sobol = estimate_subglobal_sobol_indices(fsens, parmsModeUpperRows, p0; n_sample = 10)
+    df_sobol = estimate_subglobal_sobol_indices(fsens, parmsModeUpperRows, p0; n_sample = 10, names_opt=[:a,:b])
     @test nrow(df_sobol) == 8
-end
+end;

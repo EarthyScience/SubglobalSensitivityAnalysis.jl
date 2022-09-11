@@ -1,12 +1,13 @@
 """
     estimate_subglobal_sobol_indices(f, parmsModeUpperRows, p0; 
+        estim::SobolSensitivityEstimator=SobolTouati(),
         n_sample = 500, δ_cp = 0.1, names_opt, targets)
 
 Estimate the Sobol sensitivity indices for a subspace of the global space around
 parameter vector `p0`.
 
 The subspace to sample is determined by an area in the cumulative
-probability function, specifically for parameter i: cdf(p0) ± δ_cp.
+probability function, specifically for parameter i_par: cdf(p0) ± δ_cp.
 Samples are drawn from this cdf-scale and converted back to quantiles
 at the parameter scale.
 
@@ -27,6 +28,8 @@ and n is the number of samples in each of the two random parameter samples.
 
 Optional
 
+- `estim`: The SobolSensitivityEstimator, responsible for generating the 
+  design matrix and computing the indices for a given result
 - `n_sample = 500`: the number of parameter-vectors in each of the samples
    used by the sensitivity method.
 - `δ_cp = 0.1`: the range around cdf(p0_i) to sample.
@@ -42,7 +45,7 @@ A DataFrame with columns
 - `par`: parameter name 
 - `index`: which one of the SOBOL-indices, `:first_order` or `:total`
 - `value`: the estimate
-- `cf95_lower` and `cf95_upper`: estimates of the 95% confidence interval
+- `cf_lower` and `cf_upper`: estimates of the 95% confidence interval
 - `target`: the result, for which the sensitivity has been computed
 """
 function estimate_subglobal_sobol_indices(f, parmsModeUpperRows, p0; kwargs...)
@@ -51,21 +54,26 @@ function estimate_subglobal_sobol_indices(f, parmsModeUpperRows, p0; kwargs...)
 end
 function estimate_subglobal_sobol_indices(
     f, df_dist::DataFrame, p0; 
+    estim::SobolSensitivityEstimator=SobolTouati(),
     n_sample=500, δ_cp=0.1, targets=missing, names_opt=missing)
     #
     set_reference_parameters!(df_dist, p0)
-    calculate_parbounds!(df_dist; δ_cp)
-    if ismissing(names_opt); names_opt = df_dist.par; end
-    # only works since 1.7: (;cp_design, df_cfopt, path_sens_object) = compute_cp_design_matrix(
-    # need to care for argument order
-    (cp_design, df_cfopt, path_sens_object) = compute_cp_design_matrix(
-            df_dist, names_opt, n_sample)
-        q_design = transform_cp_design_to_quantiles(df_cfopt, cp_design)
+    if ismissing(names_opt)
+        names_opt = df_dist.par
+        df_dist_opt = df_dist
+    else
+        df_dist_opt = subset(df_dist, :par => ByRow(x -> x ∈ names_opt))
+    end
+    calculate_parbounds!(df_dist_opt; δ_cp)
+    X1 = get_uniform_cp_sample(df_dist_opt, n_sample);
+    X2 = get_uniform_cp_sample(df_dist_opt, n_sample);
+    cp_design = generate_design_matrix(estim, X1, X2)
+    q_design = transform_cp_design_to_quantiles(df_dist_opt, cp_design)
     res = map(r -> f(r...), eachrow(q_design))
     if ismissing(targets); targets = propertynames(first(res)); end
     dfs = map(targets) do target
         y = [tup[target] for tup in res]
-        df_sobol =  compute_sobol_indices(y, path_sens_object, df_cfopt.par)
+        df_sobol =  estimate_sobol_indices(estim, y, df_dist_opt.par)
         transform!(df_sobol, [] => ByRow(() -> target) => :target)
     end
     vcat(dfs...)
@@ -159,91 +167,31 @@ function calculate_parbounds!(df; kwargs...)
     transform!(df, [:ref,:dist,] => ByRow(f2v) => AsTable)
 end
 
-"""
-    compute_cp_design_matrix(df_dist, names_opt, N; path_sens_object=tempname()*".rds")
-
-Compute the design matrix for two symples of size N from cumulative probability ranges.
-Returns a NamedTuple: 
-- cp_design: Matrix (n_row x n_param) for wich output needs to be computed
-- path_sens_object: path to the file that stores the R sensitivity object
-"""
-function compute_cp_design_matrix(df_dist, names_opt, N; path_sens_object=tempname()*".rds")
-    # ranges of cumulative probabilities given to R
-    df_cfopt = Chain.@chain df_dist begin
-        select(:par, :cp_sens_lower, :cp_sens_upper, :dist) 
-        subset(:par => ByRow(x -> x ∈ names_opt))
+"get matrix (n_sample, n_par) with uniformly sampled in cumaltive p domain"
+function get_uniform_cp_sample(df_dist, n_sample)
+    tmp = map(Tables.namedtupleiterator(select(df_dist, :cp_sens_lower, :cp_sens_upper))) do (lower,upper)
+        rand(Uniform(lower, upper), n_sample)
     end
-    check_R()
-    cp_design = rcopy(R"""
-        #library(sensitivity) # moved to check_R() that installs
-        # for sobolowen X1,X2,X3 need to be data.frames, and need to convert
-        # design matrix (now also a data.frame) to array
-        set.seed(0815)
-        N = $(N)
-        path_sens <- $(path_sens_object)
-        dfr <- $(select(df_cfopt, :par, :cp_sens_lower, :cp_sens_upper))
-        get_sample <- function(){
-        setNames(data.frame(sapply(1:nrow(dfr), function(i){
-            runif(N, min = dfr$cp_sens_lower[i], max = dfr$cp_sens_upper[i])
-        })), dfr$par)
-        }
-        #plot(density(get_sample()$k_L))
-        #lines(density(get_sample()$k_R))
-        #sensObject <- sobolSalt(NULL,get_sample(), get_sample(), nboot=100) 
-        sensObject <- soboltouati(NULL,get_sample(), get_sample(), nboot=100) 
-        # sobolowen returned fluctuating results on repeated sample matrices
-        # sensObject <- sobolowen(...)
-        saveRDS(sensObject, path_sens)
-        # str(sensObject$X)
-        data.matrix(sensObject$X)
-        """);
-    (;cp_design, df_cfopt, path_sens_object)
+    hcat(tmp...)
+    # # mutating single-allocation version
+    # X1 = Matrix{eltype(df_dist.cp_sens_lower)}(undef, n_sample, nrow(df_dist))
+    # X2 = copy(X1)
+    # for (i, (lower, upper)) in enumerate(Tables.namedtupleiterator(select(df_dist, :cp_sens_lower, :cp_sens_upper)))
+    #     dunif = Uniform(lower, upper)
+    #     X1[:,i] .= rand(dunif, n_sample)
+    #     X2[:,i] .= rand(dunif, n_sample)
+    # end
 end
 
-
 """
-    transform_cp_design_to_quantiles(df_cfopt, cp_design)
+    transform_cp_design_to_quantiles(df_dist_opt, cp_design)
 
 Transform cumulative probabilities back to quantiles.
 """
-function transform_cp_design_to_quantiles(df_cfopt, cp_design)
+function transform_cp_design_to_quantiles(df_dist_opt, cp_design)
     q_design = similar(cp_design)
     for (i_par, col_design) in enumerate(eachcol(cp_design))
-        q_design[:,i_par] .= quantile.(df_cfopt.dist[i_par], col_design)
+        q_design[:,i_par] .= quantile.(df_dist_opt.dist[i_par], col_design)
     end
     q_design
-end
-
-"""
-    compute_sobol_indices(y, path_sens_object, par_names)
-
-Tell the results, `y`,to sensitivity object in R, deserialized from `path_sens_object`
-and compute first order and total SOBOL effects and its uncertainty.
-
-Returns a DataFrame with columns 
-- par: parameter name from par_names - should match `df_cfopt.par` 
-      from [compute_cp_design_matrix](@ref)
-- index: which one of the SOBOL-indices, `:first_order` or `:total`
-- value: the estimate
-- cf95_lower and cf95_upper: estimates of the 95% confidence interval
-""" 
-function compute_sobol_indices(y, path_sens_object, par_names)
-    check_R()
-    df_S, df_T = rcopy(R"""
-        y = $(y)
-        path_sens = $(path_sens_object)
-        #library(sensitivity) # moved to check_R
-        sensObject = readRDS(path_sens)
-        tell(sensObject, y)
-        l <- list(sensObject$S, sensObject$T)
-        # lapply(l, function(o){
-        #     colnames(o) <- gsub(" ","", colnames(o)); o
-        # })
-        """)
-        tmp = rename!(
-            vcat(df_S::DataFrame, df_T::DataFrame), SA[:value, :cf95_lower, :cf95_upper])
-        tmp[!,:par] = vcat(par_names,par_names)
-        tmp[!,:index] = collect(Iterators.flatten(
-            map(x -> Iterators.repeated(x, nrow(df_S)), (:first_order,:total))))
-        select!(tmp, :par, :index, Not([:par, :index]))
 end

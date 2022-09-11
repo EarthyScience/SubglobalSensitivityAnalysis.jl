@@ -11,7 +11,12 @@ using RCall
     include("test_r_helpers.jl")
 end
 
-@testset "SubglobalSensitivityAnalysis.jl" begin
+@testset "SobolSensitivityEstimator" begin
+    #include("test/test_SobolSensitivityEstimator.jl")
+    include("test_SobolSensitivityEstimator.jl")
+end
+
+@testset "SubglobalSensitivityAnalysis" begin
     #include("test/test_subglobalsens.jl")
     include("test_subglobalsens.jl")
 end
