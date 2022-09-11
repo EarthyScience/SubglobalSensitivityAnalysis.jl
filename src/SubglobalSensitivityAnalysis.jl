@@ -11,7 +11,8 @@ using InlineStrings
 using Infiltrator
 
 export SensitivityEstimator, SobolSensitivityEstimator, RSobolEstimator
-export generate_design_matrix, get_design_matrix, estimate_sobol_indices
+export generate_design_matrix, get_design_matrix, estimate_sobol_indices, reload_design_matrix
+export supports_reloading, SupportsReloading, SupportsReloadingNo, SupportsReloadingYes
 export SobolTouati
 include("Sobol.jl")
 
