@@ -1,4 +1,4 @@
-## Reference
+## Subglobal sensitivity analysis
 ```@index
 Pages = ["estimate_subglobal.md",]
 ```

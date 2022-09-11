@@ -31,7 +31,7 @@ y = [tup[target] for tup in res];
     df_sobol = estimate_sobol_indices(sens_estimator, y, df_dist.par)
     @test df_sobol.par == [:a,:b,:a,:b]
     @test df_sobol.index == [:first_order, :first_order, :total, :total]
-    @test all([:value, :cf95_lower, :cf95_upper] .∈ Ref(propertynames(df_sobol)))
+    @test all([:value, :cf_lower, :cf_upper] .∈ Ref(propertynames(df_sobol)))
 end;
 
 @testset "reload_design_matrix" begin

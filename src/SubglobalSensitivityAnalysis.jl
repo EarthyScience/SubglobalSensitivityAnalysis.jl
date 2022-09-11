@@ -10,11 +10,16 @@ using InlineStrings
 
 using Infiltrator
 
-export SensitivityEstimator, SobolSensitivityEstimator, RSobolEstimator
-export generate_design_matrix, get_design_matrix, estimate_sobol_indices, reload_design_matrix
+export SensitivityEstimator, SobolSensitivityEstimator
 export supports_reloading, SupportsReloading, SupportsReloadingNo, SupportsReloadingYes
-export SobolTouati
+export generate_design_matrix, get_design_matrix, estimate_sobol_indices, reload_design_matrix
 include("Sobol.jl")
+
+export RSobolEstimator
+include("rsobol/RSobolEstimator.jl")
+
+export SobolTouati
+include("rsobol/SobolTouati.jl")
 
 export estimate_subglobal_sobol_indices, fit_distributions, set_reference_parameters!
 include("sens_util.jl")

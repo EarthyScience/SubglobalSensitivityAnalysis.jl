@@ -45,7 +45,7 @@ A DataFrame with columns
 - `par`: parameter name 
 - `index`: which one of the SOBOL-indices, `:first_order` or `:total`
 - `value`: the estimate
-- `cf95_lower` and `cf95_upper`: estimates of the 95% confidence interval
+- `cf_lower` and `cf_upper`: estimates of the 95% confidence interval
 - `target`: the result, for which the sensitivity has been computed
 """
 function estimate_subglobal_sobol_indices(f, parmsModeUpperRows, p0; kwargs...)
