@@ -1,4 +1,5 @@
 using SubglobalSensitivityAnalysis
+import SubglobalSensitivityAnalysis as CP
 using Documenter
 
 # allow plot to work without display
@@ -25,9 +26,12 @@ makedocs(;
             "Reload the design matrix" => "reload_design.md"
         ],
         "Reference" => [
-            "Subglobal SA" => "estimate_subglobal.md",
-            "R dependencies" => "install_R_dependencies.md",
-            "Sobol methods" => "SobolSensitivityEstimator.md",
+            "Public" => [
+                "Subglobal SA" => "estimate_subglobal.md",
+                "R dependencies" => "install_R_dependencies.md",
+                "Sobol methods" => "SobolSensitivityEstimator.md",
+            ],
+            "Internal" => "internal.md",
         ],
     ],
 )
