@@ -25,7 +25,7 @@ of the parameter is higher.
 
 ## Getting started 
 Setup arguments and call the main function 
-[`estimate_subglobal_sobol_indices`](https://bgctw.github.io/SubglobalSensitivityAnalysis.jl/dev/reference/#SubglobalSensitivityAnalysis.estimate_subglobal_sobol_indices),
+[`estimate_subglobal_sobol_indices`](https://bgctw.github.io/SubglobalSensitivityAnalysis.jl/dev/estimate_subglobal/#SubglobalSensitivityAnalysis.estimate_subglobal_sobol_indices),
 as described in 
 [Getting started](https://bgctw.github.io/SubglobalSensitivityAnalysis.jl/dev/getting_started).
 

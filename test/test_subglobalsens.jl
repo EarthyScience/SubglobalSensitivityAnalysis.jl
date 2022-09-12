@@ -68,12 +68,15 @@ cp_design = generate_design_matrix(sens_estimator, X1, X2)
 end
 
 # for each row compute multiple results
-q_design = CP.transform_cp_design_to_quantiles(df_dist_opt, cp_design)
+q_design = CP.transform_cp_design_to_quantiles(df_dist_opt, cp_design);
 fsens = (a,b) -> (;s1 = a + b -1, s2 = a + b -0.5)
-res = map(r -> fsens(r...), eachrow(q_design))
+res = map(r -> fsens(r...), eachrow(q_design));
 
 @testset "estimate_subglobal_sobol_indices" begin
     fsens = (a,b) -> (;target1 = a + b -1, target2 = a + b -0.5)
     df_sobol = estimate_subglobal_sobol_indices(fsens, parmsModeUpperRows, p0; n_sample = 10, names_opt=[:a,:b])
     @test nrow(df_sobol) == 8
+    # repeat without the names_ope
+    df_sobol2 = estimate_subglobal_sobol_indices(fsens, df_dist_opt, p0; n_sample = 10)
+    @test nrow(df_sobol2) == 8
 end;

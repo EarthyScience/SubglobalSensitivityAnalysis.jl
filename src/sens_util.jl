@@ -49,7 +49,7 @@ A DataFrame with columns
 - `target`: the result, for which the sensitivity has been computed
 
 ## Example
-```jldoctest; output = false
+```@example
 using Distributions
 parmsModeUpperRows = [
     (:a, LogNormal, 0.2 , 0.5),
@@ -57,10 +57,8 @@ parmsModeUpperRows = [
 ];
 p0 = Dict(:a => 0.34, :b => 0.6)
 fsens = (a,b) -> (;target1 = 10a + b -1, target2 = a + b -0.5)
+# note, for real analysis use larger sample size
 df_sobol = estimate_subglobal_sobol_indices(fsens, parmsModeUpperRows, p0; n_sample = 50)
-df_sobol.cf_lower[1] > 0.0  # significant first order effect of parameter a
-# output
-true
 ```
 """
 function estimate_subglobal_sobol_indices(f, parmsModeUpperRows, p0; kwargs...)

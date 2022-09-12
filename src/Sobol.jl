@@ -37,17 +37,22 @@ If the subtype `supports_reloading(subtype) != SupportsReloadingNo()`, then afte
 a call to `generate_design_matrix`
 it should be able to recreate its state using method [`reload_design_matrix`](@ref).
 """
-generate_design_matrix(estim::SobolSensitivityEstimator, X1, X2) = error(
+function generate_design_matrix(estim::SobolSensitivityEstimator, X1, X2) 
+  error(
     "Define generate_design_matrix(estim, X1, X2) for  concrete type $(typeof(estim)).")
+end
 
 """
+    reload_design_matrix(::SupportsReloadingYes, estim::SobolSensitivityEstimator) 
+
 Reload the design matrix, 
 i.e. recreate the state after last call to [`generate_design_matrix`](@ref)
 """    
-reload_design_matrix(estim::SobolSensitivityEstimator) = reload_design_matrix(
-    supports_reloading(estim), estim)
-# reload_design_matrix(::SupportsReloadingNo, estim::SobolSensitivityEstimator) = error(
-#     "Estimator does not support reloading design matrix: " * string(estim))
-reload_design_matrix(::SupportsReloadingNo,estim::SobolSensitivityEstimator) = 3
+function reload_design_matrix(estim::SobolSensitivityEstimator) 
+  reload_design_matrix(supports_reloading(estim), estim)
+end
+function reload_design_matrix(::SupportsReloadingNo, estim::SobolSensitivityEstimator) 
+  error("Estimator does not support reloading design matrix: " * string(estim))
+end
         
 

@@ -91,8 +91,6 @@ _supports_reloading(::Nothing) = SupportsReloadingNo()
 _supports_reloading(::AbstractString) = SupportsReloadingYes()
 
 function reload_design_matrix(rest::RSobolEstimator) 
-    supports_reloading(rest) == SupportsReloadingNo() && error(
-        "RSobolEstimator does not support reloading: " * string(rest))
     R"""
     message(paste0("reading ",$(rest.varname)," from ",$(rest.filename)))
     .tmp = readRDS($(rest.filename))

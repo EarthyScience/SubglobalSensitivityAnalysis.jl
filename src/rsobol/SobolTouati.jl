@@ -45,4 +45,4 @@ get_design_matrix(estim::SobolTouati) = get_design_matrix(estim.rest)
 estimate_sobol_indices(estim::SobolTouati, args...; kwargs...) = estimate_sobol_indices(
     estim.rest, args...; kwargs...)
 supports_reloading(estim::SobolTouati) = supports_reloading(estim.rest)
-reload_design_matrix(estim::SobolTouati) = reload_design_matrix(estim.rest)
+reload_design_matrix(::SupportsReloadingYes, estim::SobolTouati) = reload_design_matrix(estim.rest)

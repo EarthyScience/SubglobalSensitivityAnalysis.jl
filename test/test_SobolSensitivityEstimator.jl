@@ -35,6 +35,7 @@ y = [tup[target] for tup in res];
 end;
 
 @testset "reload_design_matrix" begin
+    @test supports_reloading(3) == SupportsReloadingNo()
     @test supports_reloading(sens_estimator) == SupportsReloadingNo()
     @test_throws ErrorException reload_design_matrix(sens_estimator)
     mktempdir() do dir
