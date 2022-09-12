@@ -32,9 +32,9 @@ end;
 @testset "calculate_parbounds" begin
     (par,dist) = df_dist[1,[:par,:dist]]
     x = p0[par]
-    (sens_lower, sens_upper, cp_par, cp_sens_lower, cp_sens_upper) = CP.calculate_parbounds(dist, x)
-    @test cp_sens_lower == cp_par - 0.1
-    @test cp_sens_upper == cp_par + 0.1
+    (sens_lower, sens_upper, cp_ref, cp_sens_lower, cp_sens_upper) = CP.calculate_parbounds(dist, x)
+    @test cp_sens_lower == cp_ref - 0.1
+    @test cp_sens_upper == cp_ref + 0.1
     @test sens_lower < x
     @test sens_upper > x
 end;
@@ -43,7 +43,7 @@ end;
     df2 = copy(df_dist)
     CP.set_reference_parameters!(df2, p0)
     CP.calculate_parbounds!(df2)
-    @test all([:sens_lower, :sens_upper, :cp_par, :cp_sens_lower, :cp_sens_upper] .∈ Ref(propertynames(df2)))
+    @test all([:sens_lower, :sens_upper, :cp_ref, :cp_sens_lower, :cp_sens_upper] .∈ Ref(propertynames(df2)))
     #
     # omit ref for parameter b
     CP.set_reference_parameters!(df2, Dict(:a => 0.2))

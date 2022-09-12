@@ -23,9 +23,11 @@ This ensures that for a parameter with wide distribution also a wide
 range is sampled, and that more samples are drawn where the prior probability
 of the parameter is higher.
 
-## How 
-Setup arguments and call the main function [`estimate_subglobal_sobol_indices`](https://bgctw.github.io/SubglobalSensitivityAnalysis.jl/dev/reference/#SubglobalSensitivityAnalysis.estimate_subglobal_sobol_indices),
-as described in the example doctest.
+## Getting started 
+Setup arguments and call the main function 
+[`estimate_subglobal_sobol_indices`](https://bgctw.github.io/SubglobalSensitivityAnalysis.jl/dev/reference/#SubglobalSensitivityAnalysis.estimate_subglobal_sobol_indices),
+as described in 
+[Getting started](https://bgctw.github.io/SubglobalSensitivityAnalysis.jl/dev/getting_started).
 
 ## Handle foreign dependencies
 This Julia package depends on `RCall.jl` and the `sensitivity` R package.

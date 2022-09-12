@@ -20,10 +20,15 @@ makedocs(;
     ),
     pages=[
         "Home" => "index.md",
-        "Subglobal SA" => "estimate_subglobal.md",
-        "R dependencies" => "install_R_dependencies.md",
-        "Sobol methods" => "SobolSensitivityEstimator.md",
-        "Reload design matrix" => "reload_design.md"
+        "Getting started" => "getting_started.md",
+        "How to" => [
+            "Reload the design matrix" => "reload_design.md"
+        ],
+        "Reference" => [
+            "Subglobal SA" => "estimate_subglobal.md",
+            "R dependencies" => "install_R_dependencies.md",
+            "Sobol methods" => "SobolSensitivityEstimator.md",
+        ],
     ],
 )
 

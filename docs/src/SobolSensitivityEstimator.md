@@ -29,14 +29,14 @@ estimate_sobol_indices
 
 ### supports_reloading trait 
 
-Reference for the concept explained at [How to reload design matrix](@ref)
+Reference for the concept explained at [How to reload the design matrix](@ref).
 
 ```@docs
 supports_reloading
 reload_design_matrix
 ```
 
-### Sobol estiamtion methods
+### Sobol estimation methods
 ```@docs
 SobolTouati
 ```

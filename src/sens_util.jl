@@ -47,6 +47,21 @@ A DataFrame with columns
 - `value`: the estimate
 - `cf_lower` and `cf_upper`: estimates of the 95% confidence interval
 - `target`: the result, for which the sensitivity has been computed
+
+## Example
+```jldoctest; output = false
+using Distributions
+parmsModeUpperRows = [
+    (:a, LogNormal, 0.2 , 0.5),
+    (:b, LogitNormal, 0.7 , 0.9),
+];
+p0 = Dict(:a => 0.34, :b => 0.6)
+fsens = (a,b) -> (;target1 = 10a + b -1, target2 = a + b -0.5)
+df_sobol = estimate_subglobal_sobol_indices(fsens, parmsModeUpperRows, p0; n_sample = 50)
+df_sobol.cf_lower[1] > 0.0  # significant first order effect of parameter a
+# output
+true
+```
 """
 function estimate_subglobal_sobol_indices(f, parmsModeUpperRows, p0; kwargs...)
     df_dist = fit_distributions(parmsModeUpperRows)
@@ -154,13 +169,13 @@ adds/modifies output columns (named as above outputs).
 """
 function calculate_parbounds(dist, x; δ_cp=0.1, min_quant=0.005, max_quant=0.995 )
     ismissing(x) && return(NamedTuple{
-        (:sens_lower,:sens_upper,:cp_par,:cp_sens_lower,:cp_sens_upper)
+        (:sens_lower,:sens_upper,:cp_ref,:cp_sens_lower,:cp_sens_upper)
         }(ntuple(_ -> missing,5)))
-    cp_par = cdf(dist, x)
-    cp_sens_lower = max(min_quant, cp_par - δ_cp)
-    cp_sens_upper = min(max_quant, cp_par + δ_cp)
+    cp_ref = cdf(dist, x)
+    cp_sens_lower = max(min_quant, cp_ref - δ_cp)
+    cp_sens_upper = min(max_quant, cp_ref + δ_cp)
     qs = quantile.(dist, (cp_sens_lower, cp_sens_upper))
-    (;sens_lower=qs[1], sens_upper=qs[2], cp_par, cp_sens_lower, cp_sens_upper)
+    (;sens_lower=qs[1], sens_upper=qs[2], cp_ref, cp_sens_lower, cp_sens_upper)
 end,
 function calculate_parbounds!(df; kwargs...)
     f2v = (ref, dist) -> calculate_parbounds(dist,ref; kwargs...)

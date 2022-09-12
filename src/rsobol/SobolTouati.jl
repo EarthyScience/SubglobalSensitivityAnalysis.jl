@@ -20,7 +20,7 @@ empirical correlation coefficients.
   sensitivity object, and the filename of the 
   backupof this object. By providing a filename, the estimator can
   be recreated, after needing to restart the R session
-  (see [How to reload design matrix](@ref)). 
+  (see [How to reload the design matrix](@ref)). 
 """
 function SobolTouati(;
     conf = 0.95,

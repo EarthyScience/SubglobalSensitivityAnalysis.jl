@@ -27,4 +27,7 @@ include("sens_util.jl")
 export install_R_dependencies
 include("r_helpers.jl")
 
+export ishigami_fun
+include("example_funs.jl")
+
 end
