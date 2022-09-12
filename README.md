@@ -17,7 +17,7 @@ possible parameter space, specifically to a region around a reasonable parameter
 
 The user specifies a probability distribution function of each parameter,
 and the subglobal method ensures that a parameter range is sampled, so that
-a given proportion (default %20) under its prior pdf is covered.
+a given proportion (default %20) of the area under its prior pdf is covered.
 
 This ensures that for a parameter with wide distribution also a wide
 range is sampled, and that more samples are drawn where the prior probability

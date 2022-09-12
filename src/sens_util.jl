@@ -23,12 +23,13 @@ and n is the number of samples in each of the two random parameter samples.
 - `parmsModeUpperRows`: a Vector of Tuples of the form 
   `(:par_name, Distribution, mode, 95%_quantile)` where Distribution is
   a non-parameterized Object from Distributions.jl such as `LogNormal`.
-  Alternatively, the argument can be the result of [`fit_distributions`](@ref)
-- `p0`: the parameter around which the samples are drawn.
+  Alternatively, the argument can be the DataFrame with columsn `par` and `dist`,
+  such as the result of [`fit_distributions`](@ref)
+- `p0`: the parameter vector around which subspace is constructed.
 
 Optional
 
-- `estim`: The SobolSensitivityEstimator, responsible for generating the 
+- `estim`: The [`SobolSensitivityEstimator`](@ref), responsible for generating the 
   design matrix and computing the indices for a given result
 - `n_sample = 500`: the number of parameter-vectors in each of the samples
    used by the sensitivity method.

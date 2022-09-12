@@ -12,6 +12,7 @@ X1 = CP.get_uniform_cp_sample(df_dist, n_sample);
 X2 = CP.get_uniform_cp_sample(df_dist, n_sample);
 
 @testset "generate design matrix" begin
+    @test_throws ErrorException  generate_design_matrix(CP.DummySobolSensitivityEstimator(), X1, X2)
     sens_estimator2 = CP.SobolTouati(
         ;rest = RSobolEstimator("sens_touati2", tempname()*".rds"))
     cp_design = generate_design_matrix(sens_estimator2, X1, X2)

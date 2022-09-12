@@ -78,16 +78,16 @@ df_sobol = estimate_sobol_indices(estim_file, y)
 ``` 
 
 ### Reloading
-Assume after computing the outputs and backing them up to a file, our Julia
-session has crashed. The original samples to create the design matrix are lost,
-but we need to recreate the estimator object.
+Assume that after computing the outputs and backing them up to a file, our Julia
+session has been lost. The original samples to create the design matrix are lost,
+and we need to recreate the estimator object.
 
-We create a new estimator object with the same file name from above and
+We set up a new estimator object with the same file name from above and
 tell it to reload the design matrix from the file.
 
 ```@example reload1
 estim_file2 = SobolTouati(;rest=RSobolEstimator("sens_touati", fname))
-cp_design2 = reload_design_matrix(estim_file2);
+cp_design2 = reload_design_matrix(estim_file2)
 nothing # hide
 ``` 
 

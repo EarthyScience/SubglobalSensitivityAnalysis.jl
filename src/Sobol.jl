@@ -27,6 +27,9 @@ If it implements trait , then it need also implement
 """
 abstract type SobolSensitivityEstimator <: SensitivityEstimator end
 
+"just for testing errors on non-defined methods of the interface."
+struct DummySobolSensitivityEstimator <: SobolSensitivityEstimator; end
+
 """
     generate_design_matrix(estim::SobolSensitivityEstimator, X1, X2)
 
