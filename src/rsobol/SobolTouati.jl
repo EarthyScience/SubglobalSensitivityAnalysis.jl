@@ -1,7 +1,7 @@
 
-struct SobolTouati{NT} <: SobolSensitivityEstimator
+struct SobolTouati{NT, NS} <: SobolSensitivityEstimator
     conf::NT 
-    rest::RSobolEstimator
+    rest::RSobolEstimator{NS}
 end
 
 """

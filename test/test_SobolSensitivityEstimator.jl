@@ -39,6 +39,7 @@ end;
     @test supports_reloading(3) == SupportsReloadingNo()
     @test supports_reloading(sens_estimator) == SupportsReloadingNo()
     @test_throws ErrorException reload_design_matrix(sens_estimator)
+    #dir = mktempdir()
     mktempdir() do dir
         tmpfname = joinpath(dir,"sensobject.rds")
         estim2 = SobolTouati(;rest=RSobolEstimator("sens_touati2", tmpfname))
@@ -48,16 +49,14 @@ end;
         cp_design2 = reload_design_matrix(estim2);
         @test cp_design2 isa Matrix
     end
+    #rm(dir, recursive=true)
 end;
 
 i_tmp_inspecttrait = () -> begin
     # @code_llvm isnothing(sens_estimator.rest.filename)
     # @code_llvm supports_reloading(sens_estimator.rest) 
+    # @code_llvm supports_reloading(sens_estimator) 
 
     # @code_llvm supports_reloading(estim2.rest) 
     # @code_llvm supports_reloading(estim2) 
-
-    # @code_llvm supports_reloading(sens_estimator) # does not optimize
-    # @code_llvm (x -> supports_reloading(x))(sens_estimator)
-    # @code_llvm reload_design_matrix(sens_estimator)
 end
