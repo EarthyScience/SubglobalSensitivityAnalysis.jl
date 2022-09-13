@@ -49,7 +49,8 @@ end
     reload_design_matrix(::SupportsReloadingYes, estim::SobolSensitivityEstimator) 
 
 Reload the design matrix, 
-i.e. recreate the state after last call to [`generate_design_matrix`](@ref)
+i.e. recreate the state after last call to [`generate_design_matrix`](@ref).
+Called with trait type returned by [`supports_reloading`](@ref).
 """    
 function reload_design_matrix(estim::SobolSensitivityEstimator) 
   reload_design_matrix(supports_reloading(estim), estim)
