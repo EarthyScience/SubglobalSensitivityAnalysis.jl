@@ -15,6 +15,8 @@ its mode and an upper quantile.
 
 ```@example gs1
 using SubglobalSensitivityAnalysis, Distributions
+install_R_dependencies(["sensitivity"])
+
 paramsModeUpperRows = [
     (:a, LogNormal, 0.2 , 0.5),
     (:b, LogitNormal, 0.7 , 0.9),
