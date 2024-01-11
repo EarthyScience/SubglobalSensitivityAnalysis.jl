@@ -20,10 +20,6 @@ InlineStrings = "1"
 RCall = "0.13, 0.14"
 StaticArrays = "1"
 Tables = "1"
-julia = "1.6"
+julia = "1.8"   # in 1.7: version `GLIBCXX_3.4.30' not found
 
-[extras]
-Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
-[targets]
-test = ["Test"]

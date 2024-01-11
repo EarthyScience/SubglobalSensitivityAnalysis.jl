@@ -1,14 +1,13 @@
 struct RSobolEstimator{NS}
     varname::String31     # the name of the object in R
     filename::NS # the filename to which R object is serialized
-    # RSobolEstimator{NS}(varname, filename::NS) where {NS} = 
-    #     NS <: Union{Nothing,AbstractString} ? new{NS}(varname, filename) : 
-    #     error("Only Strings or nothing is allowed")
+    RSobolEstimator{NS}(varname, filename::NS) where {NS <: Union{Nothing,AbstractString}} = 
+        NS <: Union{Nothing,AbstractString} ? new{NS}(varname, filename) : 
+        error("filename must be of type")
 end
-function RSobolEstimator(varname, filename::NS) where {NS <: Union{Nothing,AbstractString}}
+function RSobolEstimator(varname, filename::NS) where NS
     RSobolEstimator{NS}(varname, filename)
 end
-
 
 # Maybe avoid duplication - so far not able to first concantenate strings
 # and only thereafter interpolate.
