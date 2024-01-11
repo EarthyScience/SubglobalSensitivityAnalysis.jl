@@ -2,7 +2,7 @@
 Trait that indicates that object can be called with method 
 [`reload_design_matrix`](@ref).
 
-Implenment this trait by `supports_reloading(subtype) = SupportsReloadingYes()`
+Implement this trait by `supports_reloading(subtype) = SupportsReloadingYes()`
 """
 abstract type SupportsReloading end,
 struct SupportsReloadingNo <: SupportsReloading end,

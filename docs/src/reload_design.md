@@ -16,7 +16,7 @@ We reuse the example from [Getting started](@ref).
 ```@example reload1
 using SubglobalSensitivityAnalysis, Distributions
 fsens = (a,b) -> (;target1 = 10a + b -1, target2 = a + b -0.5)
-parmsModeUpperRows = [
+paramsModeUpperRows = [
     (:a, LogNormal, 0.2 , 0.5),
     (:b, LogitNormal, 0.7 , 0.9),
 ]
@@ -38,7 +38,7 @@ model, here, we do the steps by hand.
 
 First, we estimate the distributions and add the center parameter values.
 ```@example reload1
-df_dist = fit_distributions(parmsModeUpperRows)
+df_dist = fit_distributions(paramsModeUpperRows)
 set_reference_parameters!(df_dist, p0)
 nothing # hide
 ``` 

@@ -11,7 +11,7 @@ R projects, because it changes from where libraries and its versions are loaded.
 
 Alternatively, install into a R-session specific library path, by using
 `lib = RCall.rcopy(R"file.path(tempdir(),'session-library')")`.
-This does not intefere, but needs to be re-done on each new start of R, and needs 
+This does not interfere, but needs to be re-done on each new start of R, and needs 
 adding `RCall.jl` to users project dependencies and imports.
 """
 function install_R_dependencies(packages; lib = rcopy(R"Sys.getenv('R_LIBS_USER')"))

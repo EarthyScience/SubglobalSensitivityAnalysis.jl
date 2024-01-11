@@ -15,7 +15,7 @@ its mode and an upper quantile.
 
 ```@example gs1
 using SubglobalSensitivityAnalysis, Distributions
-parmsModeUpperRows = [
+paramsModeUpperRows = [
     (:a, LogNormal, 0.2 , 0.5),
     (:b, LogitNormal, 0.7 , 0.9),
 ]
@@ -32,7 +32,7 @@ estimate/specify distribution parameters directly in a DataFrame with
 column `:dist`.
 
 ```@example gs1
-df_dist = fit_distributions(parmsModeUpperRows)
+df_dist = fit_distributions(paramsModeUpperRows)
 ``` 
 
 While these distributions are reasonable for each parameter, there are 
@@ -97,7 +97,7 @@ df_sobol
 ``` 
 
 The resulting DataFrame reports:
-- the estimated Sobol indeces and their confidence bounds 
+- the estimated Sobol indices and their confidence bounds 
   (columns value, cf_lower, cf_upper)
 - for all the combinations of parameter, which index, and output
   (columns par, index, target)   

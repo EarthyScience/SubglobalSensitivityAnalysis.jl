@@ -1,5 +1,5 @@
 """
-    estimate_subglobal_sobol_indices(f, parmsModeUpperRows, p0; 
+    estimate_subglobal_sobol_indices(f, paramsModeUpperRows, p0; 
         estim::SobolSensitivityEstimator=SobolTouati(),
         n_sample = 500, δ_cp = 0.1, names_opt, targets)
 
@@ -18,12 +18,12 @@ and n is the number of samples in each of the two random parameter samples.
 ## Arguments
 
 - `f`: a function to compute a set of results, whose sensitivity is to be inspected,
-  from parametes `(p1, p2, ...) -> NamedTuple{NTuple{N,NT}} where NT <: Number`, 
+  from parameters `(p1, p2, ...) -> NamedTuple{NTuple{N,NT}} where NT <: Number`, 
   for example `fsens = (a,b) -> (;target1 = a + b -1, target2 = a + b -0.5)`.
-- `parmsModeUpperRows`: a Vector of Tuples of the form 
+- `paramsModeUpperRows`: a Vector of Tuples of the form 
   `(:par_name, Distribution, mode, 95%_quantile)` where Distribution is
   a non-parameterized Object from Distributions.jl such as `LogNormal`.
-  Alternatively, the argument can be the DataFrame with columsn `par` and `dist`,
+  Alternatively, the argument can be the DataFrame with columns `par` and `dist`,
   such as the result of [`fit_distributions`](@ref)
 - `p0`: the parameter vector around which subspace is constructed.
 
@@ -38,7 +38,7 @@ Optional
   cumulative probabilities when parameters are near the ends of the distribution.
 - `targets`: a `NTuple{Symbol}` of subset of the outputs of f, to constrain the 
   computation to specific outputs.
-- `names_opt`: a `NTuple{Symbol}` of subset of the parameters given with parmsModeUpperRows
+- `names_opt`: a `NTuple{Symbol}` of subset of the parameters given with paramsModeUpperRows
   
 ## Return value
 A DataFrame with columns
@@ -52,18 +52,18 @@ A DataFrame with columns
 ## Example
 ```@example
 using Distributions
-parmsModeUpperRows = [
+paramsModeUpperRows = [
     (:a, LogNormal, 0.2 , 0.5),
     (:b, LogitNormal, 0.7 , 0.9),
 ];
 p0 = Dict(:a => 0.34, :b => 0.6)
 fsens = (a,b) -> (;target1 = 10a + b -1, target2 = a + b -0.5)
 # note, for real analysis use larger sample size
-df_sobol = estimate_subglobal_sobol_indices(fsens, parmsModeUpperRows, p0; n_sample = 50)
+df_sobol = estimate_subglobal_sobol_indices(fsens, paramsModeUpperRows, p0; n_sample = 50)
 ```
 """
-function estimate_subglobal_sobol_indices(f, parmsModeUpperRows, p0; kwargs...)
-    df_dist = fit_distributions(parmsModeUpperRows)
+function estimate_subglobal_sobol_indices(f, paramsModeUpperRows, p0; kwargs...)
+    df_dist = fit_distributions(paramsModeUpperRows)
     estimate_subglobal_sobol_indices(f, df_dist, p0; kwargs...)
 end
 function estimate_subglobal_sobol_indices(
@@ -116,10 +116,10 @@ converted to a `DataFrame`.
 A new column `:dist` with a concrete Distribution is added.
 The second variant modifies a `DataFrame` with corresponding input columns.
 """
-function fit_distributions(parmsModeUpperRows::AbstractVector{T}; 
+function fit_distributions(paramsModeUpperRows::AbstractVector{T}; 
     cols = (:par, :dType, :mode, :upper)) where T <: Tuple
     #
-    df = rename!(DataFrame(Tables.columntable(parmsModeUpperRows)), collect(cols))
+    df = rename!(DataFrame(Tables.columntable(paramsModeUpperRows)), collect(cols))
     @assert all(df[:,2] .<: Distribution) "Expected all second tuple " * 
     "components to be Distributions."
     # @assert all(isa.(df[:,3], Number)) "Expected all third tuple components (mode)" * 

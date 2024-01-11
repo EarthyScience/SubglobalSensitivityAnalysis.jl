@@ -1,8 +1,8 @@
-parmsModeUpperRows = [
+paramsModeUpperRows = [
     (:a, LogNormal, 0.1 , 0.5),
     (:b, LogitNormal, 0.3 , 0.9),
 ]
-df_dist = df_dist_opt = fit_distributions(parmsModeUpperRows)
+df_dist = df_dist_opt = fit_distributions(paramsModeUpperRows)
 p0 = Dict(:a => 0.2, :b => 0.4)
 set_reference_parameters!(df_dist, p0)
 

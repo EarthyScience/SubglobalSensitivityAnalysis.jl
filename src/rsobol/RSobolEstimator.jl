@@ -14,7 +14,7 @@ end
 # and only thereafter interpolate.
 # """
 # sens_object is set to the variable named as in String `rest.varname`.
-# If variable does not exist, try to initalize it from file `rest.filename`.
+# If variable does not exist, try to initialize it from file `rest.filename`.
 # """
 # const get_sens_object_str = raw"""
 #     sens_object = if (exists($(rest.varname))){
@@ -30,7 +30,7 @@ end
     get_design_matrix(estim) 
 
 Return the design matrix: a matrix with parameters in rows, for which to compute
-the output, whose sensitivty ist studies.    
+the output, whose sensitivity is studied.    
 """
 function get_design_matrix(rest::RSobolEstimator) 
     rcopy(R"""
@@ -50,7 +50,7 @@ end
     estimate_sobol_indices(rest::RSobolEstimator, y, par_names=missing)
 
 Estimate the Sobol sensitivity indices for the given result, `y`, for each 
-row of the desing matrix.
+row of the design matrix.
 
 ## Value
 A DataFrame with columns
