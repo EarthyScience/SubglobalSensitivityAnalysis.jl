@@ -16,7 +16,11 @@ adding `RCall.jl` to users project dependencies and imports.
 """
 function install_R_dependencies(packages; lib = rcopy(R"Sys.getenv('R_LIBS_USER')"))
     # prepend lib path
-    new_lib_paths = vcat(lib, setdiff(rcopy(R".libPaths()"), lib))
+    oldlib = rcopy(R".libPaths()")
+    #readdir(lib)
+    oldlib = oldlib isa AbstractVector ? oldlib : [oldlib]
+    new_lib_paths = vcat(lib, setdiff(oldlib, lib))
+    isdir(lib) || mkpath(lib) # create dir if not existing
     rcopy(R".libPaths(unlist($(new_lib_paths)))")
     # check which packages need to be installed
     # edge case of sapply not returning a vector but a scalar
