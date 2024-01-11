@@ -93,6 +93,7 @@ Now the Sobol indices and their confidence ranges can be computed for this outpu
 All this encapsulated by function [`estimate_subglobal_sobol_indices`](@ref).
 
 ```@example gs1
+install_R_dependencies(["sensitivity"]) # hide
 # note, for real analysis use a larger sample size
 df_sobol = estimate_subglobal_sobol_indices(fsens, df_dist, p0; n_sample = 50)
 df_sobol
