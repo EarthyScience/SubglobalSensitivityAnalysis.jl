@@ -1,3 +1,8 @@
+using SubglobalSensitivityAnalysis
+using SubglobalSensitivityAnalysis: SubglobalSensitivityAnalysis as CP
+using Test
+using Distributions
+
 paramsModeUpperRows = [
     (:a, LogNormal, 0.1 , 0.5),
     (:b, LogitNormal, 0.3 , 0.9),
@@ -16,7 +21,7 @@ X2 = CP.get_uniform_cp_sample(df_dist, n_sample);
     sens_estimator2 = CP.SobolTouati(
         ;rest = RSobolEstimator("sens_touati2", tempname()*".rds"))
     cp_design = generate_design_matrix(sens_estimator2, X1, X2)
-    npar = nrow(df_dist)
+    npar = size(df_dist, 1)
     @test size(cp_design) == ((npar+2)*n_sample, npar) 
 end;
 
