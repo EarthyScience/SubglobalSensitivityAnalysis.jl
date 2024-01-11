@@ -1,3 +1,14 @@
+using SubglobalSensitivityAnalysis
+using Test
+
+@testset "install packages to temporary directory" begin
+    #packages = pkgs_inst = ["sensitivity","units","measurements"]
+    packages = ["sensitivity"]
+    lib = rcopy(R"file.path(tempdir(),'session-library')")
+    retcode = install_R_dependencies(packages; lib)
+    @test retcode == 0
+end
+
 i_debug = () -> begin
     packages = pkgs_inst = ["sensitivity","units","measurements"]
     pkgs_inst = ["units","measurements"]
@@ -20,11 +31,4 @@ i_debug = () -> begin
     readdir(lib)
 end
 
-@testset "install packages to temporary directory" begin
-    #packages = pkgs_inst = ["sensitivity","units","measurements"]
-    packages = ["sensitivity"]
-    lib = rcopy(R"file.path(tempdir(),'session-library')")
-    retcode = install_R_dependencies(packages; lib)
-    @test retcode == 0
-end
 
