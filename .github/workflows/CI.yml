@@ -12,30 +12,30 @@ concurrency:
   cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
 jobs:
   test:
-    name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}
+    name: ${{ matrix.group }} - Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
+        group:
+          - Basic
+          - JET
         version:
-          - '1.6'
+          - '1.8'
           - '1'
         os:
           - ubuntu-latest
         arch:
           - x64
     steps:
-      # create directory of R user library in order to be able to install R package
-      #- run: Rscript -e "lu=Sys.getenv('R_LIBS_USER');dir.create(lu,recursive=TRUE)"
-      #- run: Rscript -e "install.packages(c('sensitivity'))"
       - uses: actions/checkout@v3
-      - uses: r-lib/actions/setup-r@v2
-      - run: Rscript -e 'install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/stable/%s/%s/%s", .Platform$pkgType, R.Version()$os, R.Version()$arch))'
-      - run: Rscript -e 'pak::pkg_install(c("any::ggplot2","any::RcppArmadillo","any::dtwclust"), upgrade = FALSE)'
-      - uses: cjdoris/julia-downgrade-compat-action@v1
-        if: ${{ matrix.version == '1.8' }}
-        with:
-          skip: Pkg,TOML,Statistics          
+      # - uses: r-lib/actions/setup-r@v2
+      # - run: Rscript -e 'install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/stable/%s/%s/%s", .Platform$pkgType, R.Version()$os, R.Version()$arch))'
+      # - run: Rscript -e 'pak::pkg_install(c("any::ggplot2","any::RcppArmadillo","any::dtwclust"), upgrade = FALSE)'
+      # - uses: cjdoris/julia-downgrade-compat-action@v1
+      #   if: ${{ matrix.version == '1.8' }}
+      #   with:
+      #     skip: Pkg,TOML,Statistics          
       - uses: julia-actions/setup-julia@v1
         with:
           version: ${{ matrix.version }}
@@ -43,6 +43,8 @@ jobs:
       - uses: julia-actions/cache@v1
       - uses: julia-actions/julia-buildpkg@v1
       - uses: julia-actions/julia-runtest@v1
+        env:
+          GROUP: ${{ matrix.group }}
       - uses: julia-actions/julia-processcoverage@v1
       - uses: codecov/codecov-action@v2
         with:
@@ -54,9 +56,6 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v3
-      # - uses: r-lib/actions/setup-r@v2
-      # - run: Rscript -e 'install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/stable/%s/%s/%s", .Platform$pkgType, R.Version()$os, R.Version()$arch))'
-      # - run: Rscript -e 'pak::pkg_install("any::sensitivity", upgrade = FALSE)'
       - uses: julia-actions/setup-julia@v1
         with:
           version: '1'

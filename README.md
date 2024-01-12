@@ -4,6 +4,7 @@
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://bgctw.github.io/SubglobalSensitivityAnalysis.jl/dev/)
 [![Build Status](https://github.com/bgctw/SubglobalSensitivityAnalysis.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/bgctw/SubglobalSensitivityAnalysis.jl/actions/workflows/CI.yml?query=branch%3Amain)
 [![Coverage](https://codecov.io/gh/bgctw/SubglobalSensitivityAnalysis.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/bgctw/SubglobalSensitivityAnalysis.jl)
+[![Aqua](https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg)](https://github.com/JuliaTesting/Aqua.jl)
 
 Estimating Sobol sensitivity indices for a subspace of the global space 
 around a parameter vector, `p0`.
