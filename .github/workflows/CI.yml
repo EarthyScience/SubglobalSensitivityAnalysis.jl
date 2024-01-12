@@ -29,24 +29,24 @@ jobs:
       #- run: Rscript -e "lu=Sys.getenv('R_LIBS_USER');dir.create(lu,recursive=TRUE)"
       #- run: Rscript -e "install.packages(c('sensitivity'))"
       - uses: actions/checkout@v3
-      # - uses: r-lib/actions/setup-r@v2
-      # - run: Rscript -e 'install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/stable/%s/%s/%s", .Platform$pkgType, R.Version()$os, R.Version()$arch))'
-      # - run: Rscript -e 'pak::pkg_install(c("any::ggplot2","any::RcppArmadillo","any::dtwclust"), upgrade = FALSE)'
-      # - uses: cjdoris/julia-downgrade-compat-action@v1
-      #   if: ${{ matrix.version == '1.8' }}
-      #   with:
-      #     skip: Pkg,TOML,Statistics          
-      # - uses: julia-actions/setup-julia@v1
-      #   with:
-      #     version: ${{ matrix.version }}
-      #     arch: ${{ matrix.arch }}
-      # - uses: julia-actions/cache@v1
-      # - uses: julia-actions/julia-buildpkg@v1
-      # - uses: julia-actions/julia-runtest@v1
-      # - uses: julia-actions/julia-processcoverage@v1
-      # - uses: codecov/codecov-action@v2
-      #   with:
-      #     files: lcov.info
+      - uses: r-lib/actions/setup-r@v2
+      - run: Rscript -e 'install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/stable/%s/%s/%s", .Platform$pkgType, R.Version()$os, R.Version()$arch))'
+      - run: Rscript -e 'pak::pkg_install(c("any::ggplot2","any::RcppArmadillo","any::dtwclust"), upgrade = FALSE)'
+      - uses: cjdoris/julia-downgrade-compat-action@v1
+        if: ${{ matrix.version == '1.8' }}
+        with:
+          skip: Pkg,TOML,Statistics          
+      - uses: julia-actions/setup-julia@v1
+        with:
+          version: ${{ matrix.version }}
+          arch: ${{ matrix.arch }}
+      - uses: julia-actions/cache@v1
+      - uses: julia-actions/julia-buildpkg@v1
+      - uses: julia-actions/julia-runtest@v1
+      - uses: julia-actions/julia-processcoverage@v1
+      - uses: codecov/codecov-action@v2
+        with:
+          files: lcov.info
   docs:
     name: Documentation
     runs-on: ubuntu-latest
