@@ -11,12 +11,16 @@ R projects, because it changes from where libraries and its versions are loaded.
 
 Alternatively, install into a R-session specific library path, by using
 `lib = RCall.rcopy(R"file.path(tempdir(),'session-library')")`.
-This does not intefere, but needs to be re-done on each new start of R, and needs 
+This does not interfere, but needs to be re-done on each new start of R, and needs 
 adding `RCall.jl` to users project dependencies and imports.
 """
 function install_R_dependencies(packages; lib = rcopy(R"Sys.getenv('R_LIBS_USER')"))
     # prepend lib path
-    new_lib_paths = vcat(lib, setdiff(rcopy(R".libPaths()"), lib))
+    oldlib = rcopy(R".libPaths()")
+    #readdir(lib)
+    oldlib = oldlib isa AbstractVector ? oldlib : [oldlib]
+    new_lib_paths = vcat(lib, setdiff(oldlib, lib))
+    isdir(lib) || mkpath(lib) # create dir if not existing
     rcopy(R".libPaths(unlist($(new_lib_paths)))")
     # check which packages need to be installed
     # edge case of sapply not returning a vector but a scalar

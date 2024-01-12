@@ -19,7 +19,7 @@ jobs:
       matrix:
         version:
           - '1.6'
-          - '1.8'
+          - '1'
         os:
           - ubuntu-latest
         arch:
@@ -28,7 +28,14 @@ jobs:
       # create directory of R user library in order to be able to install R package
       #- run: Rscript -e "lu=Sys.getenv('R_LIBS_USER');dir.create(lu,recursive=TRUE)"
       #- run: Rscript -e "install.packages(c('sensitivity'))"
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      - uses: r-lib/actions/setup-r@v2
+      - run: Rscript -e 'install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/stable/%s/%s/%s", .Platform$pkgType, R.Version()$os, R.Version()$arch))'
+      - run: Rscript -e 'pak::pkg_install(c("any::ggplot2","any::RcppArmadillo","any::dtwclust"), upgrade = FALSE)'
+      - uses: cjdoris/julia-downgrade-compat-action@v1
+        if: ${{ matrix.version == '1.8' }}
+        with:
+          skip: Pkg,TOML,Statistics          
       - uses: julia-actions/setup-julia@v1
         with:
           version: ${{ matrix.version }}
@@ -46,7 +53,10 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      # - uses: r-lib/actions/setup-r@v2
+      # - run: Rscript -e 'install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/stable/%s/%s/%s", .Platform$pkgType, R.Version()$os, R.Version()$arch))'
+      # - run: Rscript -e 'pak::pkg_install("any::sensitivity", upgrade = FALSE)'
       - uses: julia-actions/setup-julia@v1
         with:
           version: '1'

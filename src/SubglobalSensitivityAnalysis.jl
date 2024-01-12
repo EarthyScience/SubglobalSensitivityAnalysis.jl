@@ -8,8 +8,6 @@ using Chain
 using StaticArrays
 using InlineStrings
 
-using Infiltrator
-
 export SensitivityEstimator, SobolSensitivityEstimator
 export supports_reloading, SupportsReloading, SupportsReloadingNo, SupportsReloadingYes
 export generate_design_matrix, get_design_matrix, estimate_sobol_indices, reload_design_matrix

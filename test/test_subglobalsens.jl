@@ -3,16 +3,16 @@
 #using Distributions
 #push!(LOAD_PATH, "~/julia/devtools")
 
-parmsModeUpperRows = [
+paramsModeUpperRows = [
     (:a, LogNormal, 0.1 , 0.5),
     (:b, LogitNormal, 0.3 , 0.9),
     (:nonopt, LogitNormal, 0.3 , 0.9),
 ]
-df_dist = CP.fit_distributions(parmsModeUpperRows)
+df_dist = CP.fit_distributions(paramsModeUpperRows)
 p0 = Dict(:a => 0.2, :b => 0.4)
 
 @testset "fitDistr tups" begin
-    df2 = @inferred CP.fit_distributions(parmsModeUpperRows)
+    df2 = @inferred CP.fit_distributions(paramsModeUpperRows)
     @test df2 isa DataFrame
     @test all([:par, :dType, :mode, :upper, :dist] .∈ Ref(propertynames(df2)))
     @test df2.dist[2] isa LogitNormal
@@ -74,7 +74,7 @@ res = map(r -> fsens(r...), eachrow(q_design));
 
 @testset "estimate_subglobal_sobol_indices" begin
     fsens = (a,b) -> (;target1 = a + b -1, target2 = a + b -0.5)
-    df_sobol = estimate_subglobal_sobol_indices(fsens, parmsModeUpperRows, p0; n_sample = 10, names_opt=[:a,:b])
+    df_sobol = estimate_subglobal_sobol_indices(fsens, paramsModeUpperRows, p0; n_sample = 10, names_opt=[:a,:b])
     @test nrow(df_sobol) == 8
     # repeat without the names_ope
     df_sobol2 = estimate_subglobal_sobol_indices(fsens, df_dist_opt, p0; n_sample = 10)
