@@ -6,6 +6,8 @@ using Documenter
 # https://discourse.julialang.org/t/generation-of-documentation-fails-qt-qpa-xcb-could-not-connect-to-display/60988/2
 ENV["GKSwstype"] = "100"
 
+install_R_dependencies(["sensitivity"]) 
+
 DocMeta.setdocmeta!(SubglobalSensitivityAnalysis, :DocTestSetup, :(using SubglobalSensitivityAnalysis); recursive=true)
 
 makedocs(;
