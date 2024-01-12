@@ -20,11 +20,11 @@ const GROUP = get(ENV, "GROUP", "All") # defined in in CI.yml
         #@safetestset "Tests" include("test/test_subglobalsens.jl")
         @time @safetestset "test_subglobalsens" include("test_subglobalsens.jl")
     end
-    # if GROUP == "All" || GROUP == "JET"
-    #     #@safetestset "Tests" include("test/test_JET.jl")
-    #     @time @safetestset "test_JET" include("test_JET.jl")
-    #     #@safetestset "Tests" include("test/test_aqua.jl")
-    #     @time @safetestset "test_Aqua" include("test_aqua.jl")
-    # end
+    if GROUP == "All" || GROUP == "JET"
+        #@safetestset "Tests" include("test/test_JET.jl")
+        @time @safetestset "test_JET" include("test_JET.jl")
+        #@safetestset "Tests" include("test/test_aqua.jl")
+        @time @safetestset "test_Aqua" include("test_aqua.jl")
+    end
 end
 
