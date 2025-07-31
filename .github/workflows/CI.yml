@@ -32,11 +32,11 @@ jobs:
       - uses: r-lib/actions/setup-r@v2
       - run: Rscript -e 'install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/stable/%s/%s/%s", .Platform$pkgType, R.Version()$os, R.Version()$arch))'
       - run: Rscript -e 'library(utils)'
-      #- run: Rscript -e 'pak::pkg_install(c("any::utils","any::grDevices","any::graphics","any::stats","any::methods"), upgrade = FALSE)'
-      #- run: Rscript -e 'install.packages(c("utils","grDevices","graphics","stats","methods"), .Platform$pkgType, R.Version()$os, R.Version()$arch))'
-      - run: Rscript -e 'pak::pkg_install(c("any::ggplot2","any::RcppArmadillo","any::dtwclust"), upgrade = FALSE)'
+      #- run: Rscript -e 'pak::pkg_install(c("any::ggplot2","any::RcppArmadillo","any::dtwclust"), upgrade = FALSE)' # TODO uncomment when solved R_HOME and utils package
       - run: R_HOME=$(R RHOME)
-      - run: echo $R_HOME
+      - run: |
+          echo "::set-output name=r_home::$R_HOME"
+          echo "$R_HOME"  
       - uses: cjdoris/julia-downgrade-compat-action@v1
         if: ${{ matrix.version == '1.10' }}
         with:
@@ -47,6 +47,9 @@ jobs:
           arch: ${{ matrix.arch }}
       - uses: julia-actions/cache@v1
       - uses: julia-actions/julia-buildpkg@v1
+      - name: Run RCall
+        run: |
+          julia -e "using RCall; println(RCall.R.version); println(ENV[\"R_HOME\"])"
       - uses: julia-actions/julia-runtest@v1
         env:
           GROUP: ${{ matrix.group }}
