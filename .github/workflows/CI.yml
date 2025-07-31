@@ -53,7 +53,7 @@ jobs:
         run: |
           julia -e "println(ENV[\"R_HOME\"])"
           julia -e "println(ENV[\"action_state\"])"
-          julia -e "import Pkg; Pkg.add("RCall"); using RCall; println(RCall.R.version)"
+          julia -e "import Pkg; Pkg.add("RCall"); using RCall; println(R\"rnorm(10)\")"
       - uses: julia-actions/julia-runtest@v1
         env:
           GROUP: ${{ matrix.group }}
