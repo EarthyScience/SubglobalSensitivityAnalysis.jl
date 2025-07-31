@@ -31,7 +31,9 @@ jobs:
       - uses: actions/checkout@v3
       - uses: r-lib/actions/setup-r@v2
       - run: Rscript -e 'install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/stable/%s/%s/%s", .Platform$pkgType, R.Version()$os, R.Version()$arch))'
-      - run: Rscript -e 'pak::pkg_install(c("any::utils","any::grDevices","any::graphics","any::stats","any::methods"), upgrade = FALSE)'
+      - run: Rscript -e 'library(utils)'
+      #- run: Rscript -e 'pak::pkg_install(c("any::utils","any::grDevices","any::graphics","any::stats","any::methods"), upgrade = FALSE)'
+      #- run: Rscript -e 'install.packages(c("utils","grDevices","graphics","stats","methods"), .Platform$pkgType, R.Version()$os, R.Version()$arch))'
       - run: Rscript -e 'pak::pkg_install(c("any::ggplot2","any::RcppArmadillo","any::dtwclust"), upgrade = FALSE)'
       - run: R_HOME=$(R RHOME)
       - run: echo $R_HOME
