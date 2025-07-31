@@ -21,7 +21,7 @@ jobs:
           - Basic
           - JET
         version:
-          - '1.8'
+          - '1.10'
           - '1'
         os:
           - ubuntu-latest
@@ -33,7 +33,7 @@ jobs:
       # - run: Rscript -e 'install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/stable/%s/%s/%s", .Platform$pkgType, R.Version()$os, R.Version()$arch))'
       # - run: Rscript -e 'pak::pkg_install(c("any::ggplot2","any::RcppArmadillo","any::dtwclust"), upgrade = FALSE)'
       - uses: cjdoris/julia-downgrade-compat-action@v1
-        if: ${{ matrix.version == '1.8' }}
+        if: ${{ matrix.version == '1.10' }}
         with:
           skip: Pkg,TOML,Statistics          
       - uses: julia-actions/setup-julia@v1

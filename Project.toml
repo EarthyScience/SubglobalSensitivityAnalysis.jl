@@ -20,6 +20,6 @@ InlineStrings = "1.4.0"
 RCall = "0.14"
 StaticArrays = "1.9.0"
 Tables = "1.9.0"
-julia = "1.8"   # in 1.7: version `GLIBCXX_3.4.30' not found
+julia = "1.10"   
 
 
