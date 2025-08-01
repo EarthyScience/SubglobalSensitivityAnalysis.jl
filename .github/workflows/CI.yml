@@ -31,14 +31,14 @@ jobs:
       - uses: actions/checkout@v3
       - uses: r-lib/actions/setup-r@v2
       - run: Rscript -e 'install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/stable/%s/%s/%s", .Platform$pkgType, R.Version()$os, R.Version()$arch))'
-      - run: Rscript -e 'library(utils)'
-      #- run: Rscript -e 'pak::pkg_install(c("any::ggplot2","any::RcppArmadillo","any::dtwclust"), upgrade = FALSE)' # TODO uncomment when solved R_HOME and utils package
+      #- run: Rscript -e 'pak::pkg_install(c("any::ggplot2","any::RcppArmadillo","any::dtwclust"), upgrade = FALSE)' 
+      - run: Rscript -e 'pak::pkg_install(c("any::sensitivity"), upgrade = FALSE)'   
       - run: |
           echo "R_HOME=$(R RHOME)" >> $GITHUB_ENV
           echo "LD_LIBRARY_PATH=$(R RHOME)/lib" >> $GITHUB_ENV
-      - run: |
-          echo "R_HOME=$R_HOME"  
-          echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH"  
+      # - run: |
+      #     echo "R_HOME=$R_HOME"  
+      #     echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH"  
       - uses: cjdoris/julia-downgrade-compat-action@v1
         if: ${{ matrix.version == '1.10' }}
         with:
@@ -54,7 +54,7 @@ jobs:
           julia -e "println(ENV[\"R_HOME\"])"
           realpath .
           Rscript -e "rnorm(10)"
-          julia --startup-file=no --project=. -e "println(ENV[\"R_HOME\"]); using Pkg; Pkg.build(\"RCall\"); using RCall; println(R\"rnorm(10)\")"
+          julia --startup-file=no --project=. -e "using RCall; println(R\"rnorm(10)\")"
       - uses: julia-actions/julia-runtest@v1
         env:
           GROUP: ${{ matrix.group }}
@@ -69,6 +69,14 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v3
+      - uses: r-lib/actions/setup-r@v2
+      - run: Rscript -e 'install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/stable/%s/%s/%s", .Platform$pkgType, R.Version()$os, R.Version()$arch))'
+      #- run: Rscript -e 'pak::pkg_install(c("any::sensitivity"), upgrade = FALSE)'   # test automatic install
+      #only preinstall dependent packages (faster than install.packages)
+      - run: Rscript -e 'pak::pkg_install(c("any::ggplot2","any::RcppArmadillo","any::dtwclust"), upgrade = FALSE)' 
+      - run: |
+          echo "R_HOME=$(R RHOME)" >> $GITHUB_ENV
+          echo "LD_LIBRARY_PATH=$(R RHOME)/lib" >> $GITHUB_ENV
       - uses: julia-actions/setup-julia@v1
         with:
           version: '1'
