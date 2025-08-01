@@ -35,10 +35,8 @@ jobs:
       #- run: Rscript -e 'pak::pkg_install(c("any::ggplot2","any::RcppArmadillo","any::dtwclust"), upgrade = FALSE)' # TODO uncomment when solved R_HOME and utils package
       - run: |
           echo "R_HOME=$(R RHOME)" >> $GITHUB_ENV
-          echo "action_state=yellow" >> $GITHUB_ENV
       - run: |
           echo "R_HOME=$R_HOME"  
-          echo "action_state=$action_state"  
       - uses: cjdoris/julia-downgrade-compat-action@v1
         if: ${{ matrix.version == '1.10' }}
         with:
@@ -52,9 +50,9 @@ jobs:
       - name: Run simple RCall
         run: |
           julia -e "println(ENV[\"R_HOME\"])"
-          julia -e "println(ENV[\"action_state\"])"
           realpath .
-          julia --startup-file=no --project=. -e "using RCall; println(R\"rnorm(10)\")"
+          Rscript -e "rnorm(10)"
+          julia --startup-file=no --project=. -e "println(ENV[\"R_HOME\"]); using Pkg; Pkg.build(\"RCall\"); using RCall; println(R\"rnorm(10)\")"
       - uses: julia-actions/julia-runtest@v1
         env:
           GROUP: ${{ matrix.group }}
