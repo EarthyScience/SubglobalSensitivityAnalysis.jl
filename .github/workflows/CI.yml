@@ -35,8 +35,10 @@ jobs:
       #- run: Rscript -e 'pak::pkg_install(c("any::ggplot2","any::RcppArmadillo","any::dtwclust"), upgrade = FALSE)' # TODO uncomment when solved R_HOME and utils package
       - run: |
           echo "R_HOME=$(R RHOME)" >> $GITHUB_ENV
+          echo "LD_LIBRARY_PATH=$(R RHOME)/lib" >> $GITHUB_ENV
       - run: |
           echo "R_HOME=$R_HOME"  
+          echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH"  
       - uses: cjdoris/julia-downgrade-compat-action@v1
         if: ${{ matrix.version == '1.10' }}
         with:
