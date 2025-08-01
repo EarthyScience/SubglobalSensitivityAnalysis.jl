@@ -49,11 +49,12 @@ jobs:
           arch: ${{ matrix.arch }}
       - uses: julia-actions/cache@v1
       - uses: julia-actions/julia-buildpkg@v1
-      - name: Run RCall
+      - name: Run simple RCall
         run: |
           julia -e "println(ENV[\"R_HOME\"])"
           julia -e "println(ENV[\"action_state\"])"
-          julia -e "import Pkg; Pkg.add("RCall"); using RCall; println(R\"rnorm(10)\")"
+          realpath .
+          julia --startup-file=no --project=. -e "using RCall; println(R\"rnorm(10)\")"
       - uses: julia-actions/julia-runtest@v1
         env:
           GROUP: ${{ matrix.group }}
