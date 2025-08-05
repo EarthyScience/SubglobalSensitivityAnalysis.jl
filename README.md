@@ -1,9 +1,9 @@
 # SubglobalSensitivityAnalysis
 
-[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://bgctw.github.io/SubglobalSensitivityAnalysis.jl/stable/)
-[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://bgctw.github.io/SubglobalSensitivityAnalysis.jl/dev/)
-[![Build Status](https://github.com/bgctw/SubglobalSensitivityAnalysis.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/bgctw/SubglobalSensitivityAnalysis.jl/actions/workflows/CI.yml?query=branch%3Amain)
-[![Coverage](https://codecov.io/gh/bgctw/SubglobalSensitivityAnalysis.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/bgctw/SubglobalSensitivityAnalysis.jl)
+[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://EarthyScience.github.io/SubglobalSensitivityAnalysis.jl/stable/)
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://EarthyScience.github.io/SubglobalSensitivityAnalysis.jl/dev/)
+[![Build Status](https://github.com/EarthyScience/SubglobalSensitivityAnalysis.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/EarthyScience/SubglobalSensitivityAnalysis.jl/actions/workflows/CI.yml?query=branch%3Amain)
+[![Coverage](https://codecov.io/gh/EarthyScience/SubglobalSensitivityAnalysis.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/EarthyScience/SubglobalSensitivityAnalysis.jl)
 [![Aqua](https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg)](https://github.com/JuliaTesting/Aqua.jl)
 
 Estimating Sobol sensitivity indices for a subspace of the global space 
@@ -26,9 +26,9 @@ of the parameter is higher.
 
 ## Getting started 
 Setup arguments and call the main function 
-[`estimate_subglobal_sobol_indices`](https://bgctw.github.io/SubglobalSensitivityAnalysis.jl/dev/estimate_subglobal/#SubglobalSensitivityAnalysis.estimate_subglobal_sobol_indices),
+[`estimate_subglobal_sobol_indices`](https://EarthyScience.github.io/SubglobalSensitivityAnalysis.jl/dev/estimate_subglobal/#SubglobalSensitivityAnalysis.estimate_subglobal_sobol_indices),
 as described in 
-[Getting started](https://bgctw.github.io/SubglobalSensitivityAnalysis.jl/dev/getting_started).
+[Getting started](https://EarthyScience.github.io/SubglobalSensitivityAnalysis.jl/dev/getting_started).
 
 ## Handle foreign dependencies
 This Julia package depends on `RCall.jl` and the `sensitivity` R package.
@@ -42,7 +42,7 @@ using SubglobalSensitivityAnalysis
 install_R_dependencies(["sensitivity"])
 ```
 
-Caution, this may interfere with other R projects (see [docu](https://bgctw.github.io/SubglobalSensitivityAnalysis.jl/dev/install_R_dependencies/#SubglobalSensitivityAnalysis.install_R_dependencies)).
+Caution, this may interfere with other R projects (see [docu](https://EarthyScience.github.io/SubglobalSensitivityAnalysis.jl/dev/install_R_dependencies/#SubglobalSensitivityAnalysis.install_R_dependencies)).
 
 Note, this installation to R user library needs to be run in a Julia session
 before running other commands

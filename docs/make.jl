@@ -13,11 +13,11 @@ DocMeta.setdocmeta!(SubglobalSensitivityAnalysis, :DocTestSetup, :(using Subglob
 makedocs(;
     #modules=[SubglobalSensitivityAnalysis], # uncomment to show warnings on non-included docstrings
     authors="Thomas Wutzler <twutz@bgc-jena.mpg.de> and contributors",
-    repo="https://github.com/bgctw/SubglobalSensitivityAnalysis.jl/blob/{commit}{path}#{line}",
+    repo="https://github.com/EarthyScience/SubglobalSensitivityAnalysis.jl/blob/{commit}{path}#{line}",
     sitename="SubglobalSensitivityAnalysis.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
-        canonical="https://bgctw.github.io/SubglobalSensitivityAnalysis.jl",
+        canonical="https://EarthyScience.github.io/SubglobalSensitivityAnalysis.jl",
         edit_link="main",
         assets=String[],
     ),
@@ -39,6 +39,6 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/bgctw/SubglobalSensitivityAnalysis.jl",
+    repo="github.com/EarthyScience/SubglobalSensitivityAnalysis.jl",
     devbranch="main",
 )

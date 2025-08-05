@@ -5,7 +5,7 @@ CurrentModule = SubglobalSensitivityAnalysis
 # SubglobalSensitivityAnalysis
 
 Documentation for package 
-[SubglobalSensitivityAnalysis.jl](https://github.com/bgctw/SubglobalSensitivityAnalysis.jl).
+[SubglobalSensitivityAnalysis.jl](https://github.com/EarthyScience/SubglobalSensitivityAnalysis.jl).
 
 Estimating Sobol sensitivity indices for a subspace of the global space 
 around a parameter vector `p0`.
